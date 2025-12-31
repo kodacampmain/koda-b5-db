@@ -34,12 +34,12 @@ INSERT INTO posts (title, content, user_id) VALUES
 ('my judul', 'my content 2', 6), 
 ('my judul', 'my content 3', 8);
 
-SELECT id, title, created_at, updated_at
+SELECT id, user_id, title
 FROM posts
 -- WHERE extract(minute FROM created_at) < 25 
 -- AND extract(minute FROM created_at) <= 30
 -- WHERE NOT user_id=4 AND NOT user_id=6
-WHERE NOT user_id IN (4,6)
+-- WHERE NOT user_id IN (4,6)
 -- ORDER BY user_id DESC
 -- LIMIT 5
 OFFSET 0;
@@ -53,11 +53,48 @@ UPDATE posts SET title='my title', updated_at=NOW()
 WHERE id=1;
 
 SELECT name AS "Nama", id
-FROM users
-WHERE name NOT LIKE '_akh%';
+FROM users;
+-- WHERE name NOT LIKE '_akh%';
 -- WHERE name LIKE '%a%';
 -- WHERE name LIKE 'a%';
 -- WHERE name LIKE '%a';
 -- WHERE name LIKE '_a_';
 -- WHERE name LIKE '_a';
 -- WHERE name LIKE 'a_';
+
+SELECT p.id, u.name, p.title
+FROM posts p
+FULL JOIN users u ON p.user_id = u.id;
+
+insert into users(name) values ('virgil'), ('rohman'), ('bian'), ('al');
+
+-- DB MARKET
+CREATE TABLE products (
+    id serial PRIMARY KEY,
+    product_name VARCHAR(255),
+    category_id INT
+);
+ALTER TABLE products
+ADD COLUMN supplier_id int;
+CREATE TABLE categories (
+    id serial PRIMARY KEY,
+    category_name VARCHAR(100)
+);
+CREATE TABLE suppliers (
+    id serial PRIMARY KEY,
+    supplier_name VARCHAR(255),
+    address VARCHAR(255)
+);
+
+SELECT p.id, p.product_name, c.category_name, s.supplier_name
+FROM products p
+JOIN categories c ON p.category_id = c.id
+JOIN suppliers s ON p.supplier_id = s.id
+ORDER BY p.id ASC
+LIMIT 20;
+-- WHERE c.category_name IS NULL;
+
+-- SEQUENCE MANIPULATION FUNCTION
+SELECT setval('categories_id_seq',20);
+
+UPDATE products SET supplier_id=products.id;
