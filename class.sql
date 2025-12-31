@@ -64,9 +64,17 @@ FROM users;
 
 SELECT p.id, u.name, p.title
 FROM posts p
-FULL JOIN users u ON p.user_id = u.id;
+JOIN users u ON p.user_id = u.id;
 
 insert into users(name) values ('virgil'), ('rohman'), ('bian'), ('al');
+# Agregasi
+SELECT u.id, u.name AS "Username", count(p.id) AS "Number of Posts"
+FROM posts p
+JOIN users u ON p.user_id = u.id
+-- WHERE p.title = 'my judul'
+GROUP BY u.name, u.id
+HAVING count(p.id) >= 1
+ORDER BY "Number of Posts" DESC;
 
 -- DB MARKET
 CREATE TABLE products (
