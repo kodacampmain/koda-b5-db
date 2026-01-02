@@ -1,6 +1,7 @@
 CREATE TABLE users (
  id serial primary key,
- name varchar(100)
+ name varchar(100),
+ gender char(1) NOT NULL CHECK (gender IN ('L', 'P'))
 );
 
 INSERT INTO users (name) VALUES ('fakhri');
@@ -14,11 +15,17 @@ INSERT INTO users (name) VALUES ('dako');
 
 DELETE FROM users WHERE id IN (1,5);
 
-SELECT name, id
+SELECT name, id, gender
 FROM users;
 
 ALTER TABLE users
 ADD UNIQUE(name);
+
+ALTER TABLE users
+ADD COLUMN gender char(1) NOT NULL CHECK (gender IN ('L', 'P')) DEFAULT 'L';
+
+UPDATE users SET gender = 'L'
+WHERE id = 4;
 
 CREATE TABLE posts (
     id INT GENERATED ALWAYS AS IDENTITY,
@@ -76,7 +83,7 @@ GROUP BY u.name, u.id
 HAVING count(p.id) >= 1
 ORDER BY "Number of Posts" DESC;
 
--- DB MARKET
+-- DB MARKET Koda 5
 CREATE TABLE products (
     id serial PRIMARY KEY,
     product_name VARCHAR(255),
@@ -106,3 +113,24 @@ LIMIT 20;
 SELECT setval('categories_id_seq',20);
 
 UPDATE products SET supplier_id=products.id;
+
+#DB MARKET Koda 1
+SELECT * FROM employee LIMIT 100;
+
+SELECT COUNT(id) AS "Jumlah_Pegawai", city
+FROM employee
+WHERE city LIKE 's%'
+GROUP BY city;
+
+SELECT AVG(salary) AS "Rerata_Gaji", city
+FROM employee
+GROUP BY city;
+
+SELECT t.id, SUM(p.price)
+FROM transactions_products tp
+JOIN transactions t ON t.id = tp.transaction_id
+JOIN products p ON p.id = tp.product_id
+GROUP BY t.id;
+
+# Normalisasi
+table student_course;
