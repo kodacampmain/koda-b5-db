@@ -50,8 +50,12 @@ select * from products_categories;
 select MAX(price) from products;
 select AVG(price) from products;
 
-select product_name, price from products
-where price = (select MAX(price) from products);
+WITH maximum_price AS (
+    select MAX(price) AS "max" from products
+)
+select p.product_name, p.price 
+from products p, maximum_price mp
+where p.price = mp.max;
 
 select product_name, price from products
 where price < (select AVG(price) from products);
@@ -67,6 +71,8 @@ JOIN products_categories pc ON p.product_id = pc.product_id
 JOIN categories c ON pc.category_id = c.category_id
 GROUP BY c.category_name;
 
+-- Subquery
+EXPLAIN ANALYZE
 SELECT p1.product_name, p1.price, string_agg(c1.category_name, ', ' ) AS "categories"
 FROM products p1
 JOIN products_categories pc1 ON p1.product_id = pc1.product_id
@@ -80,3 +86,20 @@ WHERE p1.price >= ANY (
 )
 GROUP BY p1.product_name, p1.price;
 
+-- CTE
+EXPLAIN ANALYZE 
+WITH average_price_per_category AS (
+    SELECT AVG(p.price) AS "avg", pc.category_id
+    FROM products p
+    JOIN products_categories pc ON p.product_id = pc.product_id
+    GROUP BY pc.category_id
+)
+SELECT p1.product_name, p1.price, string_agg(c1.category_name, ', ' ) AS "categories"
+FROM products p1
+JOIN products_categories pc1 ON p1.product_id = pc1.product_id
+JOIN categories c1 ON pc1.category_id = c1.category_id
+WHERE p1.price >= ANY (
+    select "avg" from average_price_per_category apc
+    WHERE apc.category_id = pc1.category_id
+)
+GROUP BY p1.product_name, p1.price;
