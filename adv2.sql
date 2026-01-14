@@ -5,11 +5,11 @@
 
 SELECT * FROM products;
 
-INSERT INTO sales (product_id, sales_amount)
-VALUES
-(1,100),
-(2,200),
-(1,300);
+-- INSERT INTO sales (product_id, sales_amount)
+-- VALUES
+-- (1,100),
+-- (2,200),
+-- (1,300);
 
 select * from sales;
 
@@ -19,4 +19,7 @@ WITH total_sales_per_product AS (
     GROUP BY product_id
 )
 SELECT product_id, total
-FROM total_sales_per_product;
+FROM total_sales_per_product
+WHERE total > 200;
+
+-- WHERE lower(product_name) = lower('keyboard')
