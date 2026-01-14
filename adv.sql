@@ -82,7 +82,6 @@ WHERE p1.price >= ANY (
     FROM products p
     JOIN products_categories pc ON p.product_id = pc.product_id
     WHERE pc.category_id = pc1.category_id
-    GROUP BY pc.category_id
 )
 GROUP BY p1.product_name, p1.price;
 
